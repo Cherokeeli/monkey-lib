@@ -10,8 +10,8 @@
 #ql-panel #counterClickSelector {
     position:relative;
     z-index:999;
-    height: 20px;
-    width: 150px;
+    height: 20px !important;
+    width: 150px !important;
     font-size: 1em !important;
     padding: 5px !important;
 }
