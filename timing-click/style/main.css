@@ -1,0 +1,35 @@
+#ql-panel #counterClickTime {
+    position:relative;
+    z-index:999
+}
+
+#ql-panel #counterClickSelector {
+    position:relative;
+    z-index:999
+}
+
+#ql-panel #listenButton {
+    position:relative;
+    z-index:999
+}
+
+#ql-panel #triggerButton {
+    height:50px;
+    width:50px;
+    position:relative;
+    z-index:9999;
+    background-position:center;
+    background-size:100%;
+    background-image:url(https://raw.githubusercontent.com/Cherokeeli/monkey-lib/master/timing-click/image/1.pic.png);
+}
+
+#ql-panel {
+    position:fixed;
+    z-index:9999;
+}
+
+#hidePanel {
+    position:absolute;
+    z-index:9999;
+    display:none;
+}
