@@ -45,6 +45,6 @@
     position:absolute;
     z-index:9999;
     display:none;
-    border: solid 1px rpb(238,238,238);
-    box-shadow: 0 0 5px rbg(213,210,210);
+    border: solid 1px rgb(238,238,238);
+    box-shadow: 0 0 5px rgb(213,210,210);
 }
