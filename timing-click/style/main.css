@@ -28,6 +28,7 @@
     color: red !important;
     font-size: 1em !important;
     margin: 0 !important;
+    background-color: #fff;
 }
 
 #ql-panel #triggerButton {
