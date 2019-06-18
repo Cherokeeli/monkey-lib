@@ -21,9 +21,8 @@
     z-index:999;
     width: 100%;
     border: none;
-    background-color: blue;
-    color: #fff;
-    font-size: 1.2em;
+    color: red;
+    font-size: 1em;
 }
 
 #ql-panel #triggerButton {
