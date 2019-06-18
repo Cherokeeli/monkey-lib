@@ -41,8 +41,10 @@
     z-index:9999;
 }
 
-#hidePanel {
+#ql-panel #hidePanel {
     position:absolute;
     z-index:9999;
     display:none;
+    border: solid 1px rpb(238,238,238);
+    box-shadow: 0 0 5px rbg(213,210,210);
 }
