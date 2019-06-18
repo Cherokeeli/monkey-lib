@@ -1,16 +1,29 @@
 #ql-panel #counterClickTime {
     position:relative;
-    z-index:999
+    z-index:999;
+    height: 20px;
+    width: 150px;
+    font-size: 1em;
+    padding: 5px;
 }
 
 #ql-panel #counterClickSelector {
     position:relative;
-    z-index:999
+    z-index:999;
+    height: 20px;
+    width: 150px;
+    font-size: 1em;
+    padding: 5px;
 }
 
 #ql-panel #listenButton {
     position:relative;
-    z-index:999
+    z-index:999;
+    width: 100%;
+    border: none;
+    background-color: blue;
+    color: #fff;
+    font-size: 1.2em;
 }
 
 #ql-panel #triggerButton {
