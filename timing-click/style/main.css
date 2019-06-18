@@ -5,6 +5,7 @@
     width: 150px !important;
     font-size: 1em !important;
     padding: 5px !important;
+    border: none !important;
 }
 
 #ql-panel #counterClickSelector {
@@ -14,6 +15,7 @@
     width: 150px !important;
     font-size: 1em !important;
     padding: 5px !important;
+    border: none !important;
 }
 
 #ql-panel #listenButton {
