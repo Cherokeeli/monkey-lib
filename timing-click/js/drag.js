@@ -17,7 +17,7 @@ class DragObj {
         }
     }
 
-    init(options) {
+    init(options={}) {
         document.addEventListener('mousedown', this.down.bind(this));
         document.addEventListener('mousemove', this.move.bind(this));
         document.addEventListener('mouseup', this.end.bind(this));
@@ -26,6 +26,9 @@ class DragObj {
         }
         if(typeof options.exclude === 'object') {
             this.excludeDom = options.exclude;
+        }
+        if(typeof options.include === 'object') {
+            this.includeDom = options.include;
         }
     }
 
@@ -48,8 +51,10 @@ class DragObj {
 
     end(event) {
         this.isClicked = false;
-        if(this.clickCb && (event.clientX === this.mouse.x && event.clientY===this.mouse.y && !this.excludeDom.contains(event.target))) {
-            this.clickCb(event);
+        if(this.clickCb && (event.clientX === this.mouse.x && event.clientY===this.mouse.y)) {
+            if(!this.excludeDom.contains(event.target) && this.includeDom.contains(event.target)) {
+                this.clickCb(event);
+            }
         }
     }
 }
