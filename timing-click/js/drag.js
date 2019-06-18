@@ -24,6 +24,9 @@ class DragObj {
         if(typeof options.click ==='function') {
             this.clickCb = options.click;
         }
+        if(typeof options.exclude === 'object') {
+            this.excludeDom = options.exclude;
+        }
     }
 
     down(event) {
@@ -45,7 +48,7 @@ class DragObj {
 
     end(event) {
         this.isClicked = false;
-        if(this.clickCb && (event.clientX === this.mouse.x && event.clientY===this.mouse.y && !hidePanel[0].contains(event.target))) {
+        if(this.clickCb && (event.clientX === this.mouse.x && event.clientY===this.mouse.y && !this.excludeDom.contains(event.target))) {
             this.clickCb(event);
         }
     }
