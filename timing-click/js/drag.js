@@ -18,9 +18,9 @@ class DragObj {
     }
 
     init(options) {
-        this.dom.addEventListener('mousedown', this.down.bind(this));
-        this.dom.addEventListener('mousemove', this.move.bind(this));
-        this.dom.addEventListener('mouseup', this.end.bind(this));
+        document.addEventListener('mousedown', this.down.bind(this));
+        document.addEventListener('mousemove', this.move.bind(this));
+        document.addEventListener('mouseup', this.end.bind(this));
         if(typeof options.click ==='function') {
             this.clickCb = options.click;
         }
