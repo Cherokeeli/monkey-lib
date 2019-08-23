@@ -5,7 +5,7 @@ function timer(time) {
         self.postMessage(-1);
         return self.close();
     }
-    self.postMessage(time / 1000);
+    self.postMessage(time);
     setTimeout(() => {
         timer(time - 1000);
     }, 1000)
@@ -14,5 +14,6 @@ function timer(time) {
 self.onmessage = function (event) {
     if (!event.data) return 0;
     let second = event.data;
+    console.log('get second', event.data);
     timer(second);
 };
