@@ -140,7 +140,7 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
 
     GM_addStyle(mainCss);
 
-    let timeInput = _$('<input id="counterClickTime" placeholder="输入开抢时间" type="text" />');
+    let timeInput = _$('<input id="counterClickTime" placeholder="输入开抢时间" type="datetime-local" />');
     let selectorInput = _$('<input id="counterClickSelector" placeholder="输入抢按钮选择器" type="text" />');
     let listenButton = _$('<button id="listenButton">准备开抢</button>');
     let triggerButton = _$('<div id="triggerButton"></div>');
@@ -164,22 +164,28 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
         include: panel[0]
     });
 
-    function timer(dom, time) {
-        if(time<0) {
-            dom.innerHTML = '准备开抢';
-            dom.disabled = false;
-            return;
-        }
-        dom.disabled = true;
-        dom.innerHTML = `距离开抢还有${Math.ceil(time/1000)}秒`;
-        setTimeout(() => {
-            timer(dom, time-1000);
-        },1000)
-    }
-
     function fireEvent(dom, eventName) {
         let event = new MouseEvent(eventName);
         return dom.dispatchEvent(event);
+    }
+
+    function createWorkerFromExternalURL(url, callback) {
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: url,
+            onload: function (response) {
+                var script, dataURL, worker = null;
+                if (response.status === 200) {
+                    script = response.responseText;
+                    dataURL = 'data:text/javascript;base64,' + btoa(script);
+                    worker = new unsafeWindow.Worker(dataURL);
+                }
+                callback(worker);
+            },
+            onerror: function () {
+                callback(null);
+            }
+        });
     }
 
     /*开始抢*/
@@ -189,11 +195,20 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
         let currentTime = Date.now();
         let timeout = targetTime-currentTime;
         console.log(timeout, selectorInput.val());
-        timer(listenButton[0], timeout);
-        setTimeout(function() {
-            console.log('开抢')
-            _$(selectorInput.val()).trigger('click');
-            fireEvent(document.querySelector(selectorInput.val()), 'click');
-        }, timeout);
+        createWorkerFromExternalURL('https://raw.githubusercontent.com/Cherokeeli/monkey-lib/master/timing-click/count-worker.js', function (worker) {
+            if (!worker) throw Error('Create webworker failed');
+            let btn = listenButton[0];
+            worker.onmessage = function (event) {
+                if (event.data === -1) {
+                    btn.disabled = false;
+                    _$(selectorInput.val()).trigger('click');
+                    fireEvent(document.querySelector(selectorInput.val()), 'click');
+                } else {
+                    btn.disabled = true;
+                    btn.innerHTML = `距离开抢还有${Math.ceil(event.data / 1000)}秒`;
+                }
+            };
+            worker.postMessage(timeout);
+        });
     });
 })();
