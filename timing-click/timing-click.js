@@ -212,4 +212,5 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
             worker.postMessage(timeout);
         });
     });
+
 })();
