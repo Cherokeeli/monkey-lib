@@ -11,6 +11,7 @@
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @grant        GM_xmlhttpRequest
+// @connect      githubusercontent.com
 
 // ==/UserScript==
 
