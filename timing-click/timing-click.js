@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timing Click
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  倒计时自动点击，电商抢东西专用
 // @author       Cherokeeli
 // @match        *://*.taobao.com/*
@@ -10,6 +10,7 @@
 // @run-at       document-idle
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
+// @grant        GM_xmlhttpRequest
 
 // ==/UserScript==
 
@@ -178,7 +179,7 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
 
     function fireEvent(dom, eventName) {
         let event = new MouseEvent(eventName);
-        dom.dispatchEvent(event);
+        return dom.dispatchEvent(event);
     }
 
     /*开始抢*/
@@ -191,7 +192,7 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
         timer(listenButton[0], timeout);
         setTimeout(function() {
             console.log('开抢')
-            //_$(selectorInput.val()).trigger('click');
+            _$(selectorInput.val()).trigger('click');
             fireEvent(document.querySelector(selectorInput.val()), 'click');
         }, timeout);
     });
