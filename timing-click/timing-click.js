@@ -204,6 +204,7 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
                     btn.disabled = false;
                     _$(selectorInput.val()).trigger('click');
                     fireEvent(document.querySelector(selectorInput.val()), 'click');
+                    worker.terminate();
                 } else {
                     btn.disabled = true;
                     btn.innerHTML = `距离开抢还有${Math.ceil(event.data / 1000)}秒`;
