@@ -1,17 +1,19 @@
 // ==UserScript==
 // @name         Timing Click
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3.1
 // @description  倒计时自动点击，电商抢东西专用
 // @author       Cherokeeli
 // @match        *://*.taobao.com/*
 // @match        *://*.jd.com/*
+// @match        *://*.tmall.com/*
 // @require      https://code.jquery.com/jquery-latest.js
 // @run-at       document-idle
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @grant        GM_xmlhttpRequest
 // @connect      githubusercontent.com
+// @connect      gitee.com
 
 // ==/UserScript==
 
@@ -19,6 +21,8 @@
     'use strict';
     var $ = $ || window.$;
     var _$ = $.noConflict(true);
+    var countWoker = "https://gitee.com/erokee/monkey-lib/raw/master/timing-click/count-worker.js";
+    var avatar = "https://gitee.com/erokee/monkey-lib/raw/master/timing-click/image/1.pic.png";
 
     var mainCss = `#ql-panel #counterClickTime {
 position:relative;
@@ -60,12 +64,14 @@ position:relative;
 z-index:9999;
 background-position:center;
 background-size:100%;
-background-image:url(https://raw.githubusercontent.com/Cherokeeli/monkey-lib/master/timing-click/image/1.pic.png);
+background-image:url(${avatar});
 }
 
 #ql-panel {
 position:fixed;
 z-index:9999;
+top: 10vh;
+left: 5vw;
 }
 
 #ql-panel #hidePanel {
@@ -141,21 +147,21 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
 
     GM_addStyle(mainCss);
 
-    let timeInput = _$('<input id="counterClickTime" placeholder="输入开抢时间" type="datetime-local" />');
+    let timeInput = _$('<input id="counterClickTime" placeholder="输入开抢时间" type="datetime-local" step="1" value="2019-10-12T07:22:00" />');
     let selectorInput = _$('<input id="counterClickSelector" placeholder="输入抢按钮选择器" type="text" />');
     let listenButton = _$('<button id="listenButton">准备开抢</button>');
     let triggerButton = _$('<div id="triggerButton"></div>');
     let panel = _$('<div id="ql-panel"></div>');
     let hidePanel = _$('<div id="hidePanel"></div>');
 
-    hidePanel.append(timeInput);
+    hidePanel.append(timeInput.val(dateFormatter.call(new Date(), 'yyyy-MM-ddThh:mm:ss')));
     hidePanel.append(selectorInput);
     hidePanel.append(listenButton);
 
     panel.append(triggerButton);
     panel.append(hidePanel);
 
-    _$(document.body).prepend(panel);
+    _$(document.body).append(panel);
 
     (new DragObj(panel[0])).init({
         click: function(event) {
@@ -164,6 +170,24 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
         exclude: hidePanel[0],
         include: panel[0]
     });
+
+    function dateFormatter(fmt) {
+        var o = {
+            "M+": this.getMonth() + 1,                 //月份
+            "d+": this.getDate(),                    //日
+            "h+": this.getHours(),                   //小时
+            "m+": this.getMinutes(),                 //分
+            "s+": this.getSeconds(),                 //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds()             //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
 
     function fireEvent(dom, eventName) {
         let event = new MouseEvent(eventName);
@@ -189,6 +213,14 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
         });
     }
 
+    function stepClick(times, stepInterval, clickFn) {
+        if (!times) return;
+        if (clickFn) clickFn();
+        setTimeout(function () {
+            stepClick(--times, stepInterval, clickFn);
+        }, stepInterval);
+    }
+
     /*开始抢*/
     listenButton.click(function(e) {
         let time = timeInput.val();
@@ -196,14 +228,16 @@ box-shadow: 0 0 5px rgb(213,210,210) !important;
         let currentTime = Date.now();
         let timeout = targetTime-currentTime;
         console.log(timeout, selectorInput.val());
-        createWorkerFromExternalURL('https://raw.githubusercontent.com/Cherokeeli/monkey-lib/master/timing-click/count-worker.js', function (worker) {
+        createWorkerFromExternalURL(countWoker, function (worker) {
             if (!worker) throw Error('Create webworker failed');
             let btn = listenButton[0];
             worker.onmessage = function (event) {
                 if (event.data === -1) {
                     btn.disabled = false;
-                    _$(selectorInput.val()).trigger('click');
-                    fireEvent(document.querySelector(selectorInput.val()), 'click');
+                    stepClick(3, 100, function () {
+                        _$(selectorInput.val()).trigger('click');
+                        fireEvent(document.querySelector(selectorInput.val()), 'click');
+                    });
                     worker.terminate();
                 } else {
                     btn.disabled = true;
